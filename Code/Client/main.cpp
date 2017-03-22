@@ -3,7 +3,7 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!", sf::Event::Resized);
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
 	std::unique_ptr<Client> client = std::make_unique<Client>();
@@ -15,11 +15,12 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			else if (event.type == sf::Event::Resized);
 		}
-		client->client();
 		window.clear();
 		window.draw(shape);
 		window.display();
+		client->client();
 	}
 
 	return 0;

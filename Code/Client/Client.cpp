@@ -22,8 +22,8 @@ void Client::client()
 	}
 
 	auto handle = std::async(std::launch::async, [&]
-	{
-		// keep track of the socket status
+	
+	{		// keep track of the socket status
 		sf::Socket::Status status;
 	
 		do
@@ -39,7 +39,7 @@ void Client::client()
 
 	});
 
-	return input(socket);
+	//return input(socket);
 }
 
 bool Client::connect(TcpClient& socket)
