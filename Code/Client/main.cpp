@@ -1,13 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include "Client.h"
 
-int main()
+void draw()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!", sf::Event::Resized);
 	sf::CircleShape shape(100.f);
+	sf::RenderWindow window(sf::VideoMode(800, 600), "TRON!"/*, sf::Event::Resized*/);
+	shape.setPosition(x, y);
 	shape.setFillColor(sf::Color::Green);
-	std::unique_ptr<Client> client = std::make_unique<Client>();
-
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -15,13 +14,19 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-			else if (event.type == sf::Event::Resized);
+			//else if (event.type == sf::Event::Resized);
 		}
 		window.clear();
 		window.draw(shape);
 		window.display();
-		client->client();
 	}
+}
+int main()
+{
+	std::unique_ptr<Client> client = std::make_unique<Client>();
+	sf::Thread thread(&draw);
+	thread.launch();
 
-	return 0;
+	client->client();
+		return 0;
 }

@@ -22,7 +22,6 @@ void Client::client()
 	}
 
 	auto handle = std::async(std::launch::async, [&]
-	
 	{		// keep track of the socket status
 		sf::Socket::Status status;
 	

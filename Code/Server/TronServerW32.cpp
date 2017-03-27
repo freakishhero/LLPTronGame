@@ -9,9 +9,11 @@
 #include <vector>
 
 #include <SFML\Network.hpp>
+#include <SFML\System.hpp>
 
 #include "Client.h"
 #include "MessageTypes.h"
+#include <functional>
 
 constexpr int SERVER_TCP_PORT(53000);
 constexpr int SERVER_UDP_PORT(53001);
@@ -29,6 +31,8 @@ void processChatMsg(sf::Packet &packet, Client & sender, TcpClients & tcp_client
 void ping(TcpClients& tcp_clients);
 void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector);
 void runServer();
+
+sf::Thread thread(&runServer);
 
 void ping(TcpClients& tcp_clients)
 {
@@ -95,7 +99,6 @@ void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpCli
 		auto client = Client(client_ptr);
 		tcp_clients.push_back(std::move(client));
 		std::cout << "client connected" << std::endl;
-
 		//std::string welcome_msg;
 		//std::string client_count = std::to_string(tcp_clients.size());
 		//welcome_msg = "Welcome to Huxy's chat room \n";
@@ -187,6 +190,7 @@ bool bindServerPort(sf::TcpListener& listener)
 
 int main()
 {
-	runServer();
+	thread.launch();
+	//runServer();
 	return 0;
 }
