@@ -12,7 +12,7 @@
 #include <SFML\System.hpp>
 
 #include "Client.h"
-#include "MessageTypes.h"
+#include <Game\MessageTypes.h>
 #include <functional>
 
 constexpr int SERVER_TCP_PORT(53000);
@@ -27,7 +27,7 @@ bool bindServerPort(sf::TcpListener&);
 void clearStaleCli(TcpClients & tcp_clients);
 void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClients& tcp_clients);
 void listen(sf::TcpListener&, sf::SocketSelector&, TcpClients&);
-void processChatMsg(sf::Packet &packet, Client & sender, TcpClients & tcp_clients);
+void processPlayerMovement(sf::Packet &packet, Client & sender, TcpClients & tcp_clients);
 void ping(TcpClients& tcp_clients);
 void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector);
 void runServer();
@@ -131,9 +131,9 @@ void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector)
 			packet >> header;
 
 			NetMsg msg = static_cast<NetMsg>(header);
-			if (msg == NetMsg::CHAT)
+			if (msg == NetMsg::MOVEMENT)
 			{
-				processChatMsg(packet, sender, tcp_clients);
+				processPlayerMovement(packet, sender, tcp_clients);
 			}
 			else if (msg == NetMsg::PONG)
 			{
@@ -152,13 +152,13 @@ void clearStaleCli(TcpClients & tcp_clients)
 	}), tcp_clients.end());
 }
 
-void processChatMsg(sf::Packet &packet, Client & sender, TcpClients & tcp_clients)
+void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_clients)
 {
-	std::string string;
-	packet >> string;
+	int movement_state;
+	packet >> movement_state;
 
-	std::cout << "Net Msg: (" << sender.getClientID() << ") "
-		<< string << std::endl;
+	std::cout << "Net Msg: (" << sender.getClientID() << ") Movement State: "
+		<< movement_state << std::endl;
 
 	std::cout << "Latency: " << sender.getLatency().count()
 		<< "us" << std::endl;

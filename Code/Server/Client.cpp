@@ -1,5 +1,5 @@
 #include "Client.h"
-#include "MessageTypes.h"
+#include <Game/MessageTypes.h>
 
 Client::Client(sf::TcpSocket* sock)
 	: socket(sock)

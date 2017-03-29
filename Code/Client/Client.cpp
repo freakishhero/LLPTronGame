@@ -1,69 +1,47 @@
 #include <SFML/Graphics.hpp>
+#include <Game/MessageTypes.h>
 #include "Client.h"
 
 Client::Client(sf::Color _color, sf::Vector2f _size, sf::Vector2f _start_position)
 {
-	m_player.setSize(_size);
-	m_player.setFillColor(_color);
-	m_player.setOrigin(m_player.getSize() / 2.0f);
-	m_player.setPosition(_start_position);
+	player.setSize(_size);
+	player.setFillColor(_color);
+	player.setOrigin(player.getSize() / 2.0f);
+	player.setPosition(_start_position);
 }
 
-void Client::input(TcpClient& _socket)
+void Client::input(sf::Event* _event)
 {
-	while (true)
+	if (_event->key.code = sf::Keyboard::W)
 	{
-		char input = 'a';
-		sf::Packet packet;
-		packet << input;
-		//packet << NetMsg::CHAT << input;
-		_socket.send(packet);
+		move_state = MovementState::Up;
 	}
+	else if (_event->key.code = sf::Keyboard::S)
+	{
+		move_state = MovementState::Down;
+	}
+	else if (_event->key.code = sf::Keyboard::A)
+	{
+		move_state = MovementState::Left;
+	}
+	else if (_event->key.code = sf::Keyboard::D)
+	{
+		move_state = MovementState::Right;
+	}
+		sendInput(move_state);
+}
+
+void Client::sendInput(MovementState _state)
+{
+	sf::Packet packet;
+
+	packet << NetMsg::MOVEMENT << _state;
+	socket.send(packet);
 }
 
 void Client::draw(sf::RenderWindow& _window)
 {
-	_window.draw(m_player);
-}
-
-void Client::update(float _dt)
-{
-	sf::Vector2f movement(0.0f, 0.0f);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-	{
-		m_move_state = MovementState::Left;
-	}
-	else  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-	{
-		m_move_state = MovementState::Right;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-	{
-		m_move_state = MovementState::Up;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-	{
-		m_move_state = MovementState::Down;
-	}
-
-	switch (m_move_state)
-	{
-	case MovementState::Left:
-		movement.x -= m_movement_speed * _dt;
-		break;
-	case MovementState::Right:
-		movement.x += m_movement_speed * _dt;
-		break;
-	case MovementState::Up:
-		movement.y -= m_movement_speed * _dt;
-		break;
-	case MovementState::Down:
-		movement.y += m_movement_speed * _dt;
-		break;
-	}
-
-	m_player.move(movement);
+	_window.draw(player);
 }
 
 void Client::client()
@@ -90,8 +68,6 @@ void Client::client()
 		} while (status != sf::Socket::Disconnected);
 
 	});
-
-	return input(socket);
 }
 
 bool Client::connect(TcpClient& _socket)

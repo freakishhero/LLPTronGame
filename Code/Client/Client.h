@@ -21,13 +21,14 @@ public:
 
 	void client();
 	bool connect(TcpClient&);
-	void input(TcpClient& _socket);
+	void input(sf::Event* _event);
+	void sendInput(MovementState _state);
 
 	void draw(sf::RenderWindow& _window);
-	void update(float _dt);
 
 private:
-	sf::RectangleShape m_player;
-	float m_movement_speed = 250.0f;
-	MovementState m_move_state = MovementState::Right;
+	sf::TcpSocket socket;
+	sf::RectangleShape player;
+	float movement_speed = 250.0f;
+	MovementState move_state = MovementState::Right;
 };
