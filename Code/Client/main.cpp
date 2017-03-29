@@ -1,29 +1,44 @@
 #include <SFML/Graphics.hpp>
 #include "Client.h"
 
+std::unique_ptr<Client> client = std::make_unique<Client>(sf::Color::Red, sf::Vector2f(50.0f, 50.0f),  sf::Vector2f(25.0f, 25.0f));
+float deltaTime = 0.0f;
+sf::Clock dtClock;
+
 void draw()
 {
-	sf::CircleShape shape(100.f);
-	sf::RenderWindow window(sf::VideoMode(800, 600), "TRON!"/*, sf::Event::Resized*/);
-	shape.setPosition(x, y);
-	shape.setFillColor(sf::Color::Green);
+	//Creates the client window
+	sf::RenderWindow window(sf::VideoMode(800, 600), "TRON!", sf::Style::Close);
+	//window.setSize(sf::Vector2u(1440, 900));
+
 	while (window.isOpen())
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
+		deltaTime = dtClock.restart().asSeconds();
+		sf::Event mainEvent;
+
+		while (window.pollEvent(mainEvent))
 		{
-			if (event.type == sf::Event::Closed)
+			switch (mainEvent.type)
+			{
+			case sf::Event::Closed:
 				window.close();
-			//else if (event.type == sf::Event::Resized);
+				break;
+			case sf::Event::Resized:
+				window.close();
+				break;
+			}
 		}
+		
+		client->update(deltaTime);
+
 		window.clear();
-		window.draw(shape);
+		client->draw(window);
 		window.display();
 	}
 }
+
 int main()
 {
-	std::unique_ptr<Client> client = std::make_unique<Client>();
 	sf::Thread thread(&draw);
 	thread.launch();
 

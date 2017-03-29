@@ -98,7 +98,7 @@ void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpCli
 
 		auto client = Client(client_ptr);
 		tcp_clients.push_back(std::move(client));
-		std::cout << "client connected" << std::endl;
+		std::cout << "Client (" << client.getClientID() << ") connected." << std::endl;
 		//std::string welcome_msg;
 		//std::string client_count = std::to_string(tcp_clients.size());
 		//welcome_msg = "Welcome to Huxy's chat room \n";
