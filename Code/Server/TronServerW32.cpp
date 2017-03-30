@@ -32,8 +32,6 @@ void ping(TcpClients& tcp_clients);
 void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector);
 void runServer();
 
-sf::Thread thread(&runServer);
-
 void ping(TcpClients& tcp_clients)
 {
 	constexpr auto timeout = 10s;
@@ -85,7 +83,7 @@ void listen(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClie
 		{
 			ping(tcp_clients);
 		}
-	}
+ 	}
 }
 
 void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClients& tcp_clients)
@@ -99,14 +97,14 @@ void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpCli
 		auto client = Client(client_ptr);
 		tcp_clients.push_back(std::move(client));
 		std::cout << "Client (" << client.getClientID() << ") connected." << std::endl;
-		//std::string welcome_msg;
-		//std::string client_count = std::to_string(tcp_clients.size());
-		//welcome_msg = "Welcome to Huxy's chat room \n";
-		//welcome_msg += "There are " + client_count + " connected clients";
+		std::string welcome_msg;
+		std::string client_count = std::to_string(tcp_clients.size());
+		welcome_msg = "Welcome to Huxy's chat room \n";
+		welcome_msg += "There are " + client_count + " connected clients";
 
-		//sf::Packet packet;
-		//packet << NetMsg::CHAT << welcome_msg;
-		//client_ref.send(packet);
+		sf::Packet packet;
+		packet << PacketType::MOVEMENT << welcome_msg;
+		client_ref.send(packet);
 	}
 }
 
@@ -130,12 +128,12 @@ void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector)
 			int header = 0;
 			packet >> header;
 
-			NetMsg msg = static_cast<NetMsg>(header);
-			if (msg == NetMsg::MOVEMENT)
+			PacketType packet_type = static_cast<PacketType>(header);
+			if (packet_type == PacketType::MOVEMENT)
 			{
 				processPlayerMovement(packet, sender, tcp_clients);
 			}
-			else if (msg == NetMsg::PONG)
+			else if (packet_type == PacketType::PONG)
 			{
 				sender.pong();
 			}
@@ -157,7 +155,7 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	int movement_state;
 	packet >> movement_state;
 
-	std::cout << "Net Msg: (" << sender.getClientID() << ") Movement State: "
+	std::cout << "Client (" << sender.getClientID() << ") movement state: "
 		<< movement_state << std::endl;
 
 	std::cout << "Latency: " << sender.getLatency().count()
@@ -190,7 +188,6 @@ bool bindServerPort(sf::TcpListener& listener)
 
 int main()
 {
-	thread.launch();
-	//runServer();
+	runServer();
 	return 0;
 }

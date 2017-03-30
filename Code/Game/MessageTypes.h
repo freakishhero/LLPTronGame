@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Network.hpp>
-enum NetMsg : sf::Int32
+enum PacketType : sf::Int32
 {
 	INVALID = 0,
 	MOVEMENT = 1,

@@ -3,7 +3,7 @@
 #include <future>
 #include <iostream>
 #include <string>
-#include "MoveState.h"
+#include <Game/MoveState.h>
 
 using TcpClient = sf::TcpSocket;
 using TcpClientPtr = std::unique_ptr<TcpClient>;
@@ -19,16 +19,15 @@ public:
 	Client(sf::Color _color, sf::Vector2f _size, sf::Vector2f _start_position);
 	~Client() = default;
 
-	void client();
-	bool connect(TcpClient&);
-	void input(sf::Event* _event);
-	void sendInput(MovementState _state);
-
-	void draw(sf::RenderWindow& _window);
+	void client(); //Connects to the server
+	bool connect(TcpClient&); //Validates connection
+	void input(sf::Event* _event); //Checks which key is pressed
+	void sendInput(MovementState _state); //Sends a packet based on key press
+	void draw(sf::RenderWindow& _window); //Draws the player
 
 private:
-	sf::TcpSocket socket;
-	sf::RectangleShape player;
-	float movement_speed = 250.0f;
-	MovementState move_state = MovementState::Right;
+	TcpClient socket; // Socket for the client
+	sf::RectangleShape player;	//Creates a shape for the player
+	std::atomic<MovementState> move_state = MovementState::Right; //Holds the current move state
+	MovementState previous_state; //Holds the preivous move state
 };

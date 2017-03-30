@@ -40,7 +40,7 @@ void Client::setLatency(std::chrono::microseconds duration)
 void Client::ping()
 {
 	sf::Packet ping;
-	ping << NetMsg::PING;
+	ping << PacketType::PING;
 	getSocket().send(ping);
 
 	timestamp = std::chrono::steady_clock::now();

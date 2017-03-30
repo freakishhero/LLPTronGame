@@ -7,28 +7,31 @@ void draw()
 {
 	//Creates the client window
 	sf::RenderWindow window(sf::VideoMode(800, 600), "TRONSEXUAL!", sf::Style::Close);
-	//window.setSize(sf::Vector2u(1440, 900));
 
 	while (window.isOpen())
 	{
+		//creates game event
 		sf::Event mainEvent;
 
 		while (window.pollEvent(mainEvent))
 		{
-			if (mainEvent.type = sf::Event::Closed)
+			//If the window is closed
+			if (mainEvent.type == sf::Event::Closed)
 			{
 				window.close();
 			}
-			if (mainEvent.type = sf::Event::KeyPressed)
+			//If a ke is pressed in the window
+			if (mainEvent.type == sf::Event::KeyPressed)
 			{
-				switch (mainEvent.key.code)
-				{
+					//Send the event to the client input
 					client->input(&mainEvent);
-				}
 			}
 		}
 
+		//Clear the game window
 		window.clear();
+
+		//Draw the game window
 		client->draw(window);
 		window.display();
 	}
@@ -36,9 +39,14 @@ void draw()
 
 int main()
 {
-	sf::Thread thread(&draw);
-	thread.launch();
+	/* Creates a thread of the draw function so it can run
+		with other tasks instead of halting the game. */
+	sf::Thread draw_thread(&draw);
 
+		//Runs the draw thread
+	draw_thread.launch();
+
+		/* connects to the server */
 	client->client();
 		return 0;
 }

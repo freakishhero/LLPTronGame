@@ -4,6 +4,7 @@
 
 Client::Client(sf::Color _color, sf::Vector2f _size, sf::Vector2f _start_position)
 {
+	//creates the player
 	player.setSize(_size);
 	player.setFillColor(_color);
 	player.setOrigin(player.getSize() / 2.0f);
@@ -12,41 +13,56 @@ Client::Client(sf::Color _color, sf::Vector2f _size, sf::Vector2f _start_positio
 
 void Client::input(sf::Event* _event)
 {
-	if (_event->key.code = sf::Keyboard::W)
+	/*Stores the previous movement state so that
+	  the player isn't sending unecessary packets
+	  of the same type to the server. */
+	previous_state = move_state;
+
+	//Sets the movement state based on WASD input
+	switch (_event->key.code)
 	{
+	case sf::Keyboard::W:
 		move_state = MovementState::Up;
-	}
-	else if (_event->key.code = sf::Keyboard::S)
-	{
+		break;
+	case sf::Keyboard::S:
 		move_state = MovementState::Down;
-	}
-	else if (_event->key.code = sf::Keyboard::A)
-	{
+		break;
+	case sf::Keyboard::A:
 		move_state = MovementState::Left;
-	}
-	else if (_event->key.code = sf::Keyboard::D)
-	{
+		break;
+	case sf::Keyboard::D:
 		move_state = MovementState::Right;
+		break;
 	}
+
+	/*If the preivous movestate isn't the
+		current one then it's valid to be sent*/
+	if(previous_state != move_state)
 		sendInput(move_state);
 }
 
 void Client::sendInput(MovementState _state)
 {
+	//Creates a packet
 	sf::Packet packet;
 
-	packet << NetMsg::MOVEMENT << _state;
+	/* Adds the packet type and movement state
+	   to the packet*/
+	packet << PacketType::MOVEMENT << _state;
+
+	//Sends the packet
 	socket.send(packet);
 }
 
 void Client::draw(sf::RenderWindow& _window)
 {
+	//Draws the player to the window
 	_window.draw(player);
 }
 
 void Client::client()
 {
-	TcpClient socket;
+	//Checks if the player can connect
 	if (!connect(socket))
 	{
 		return;
@@ -73,12 +89,15 @@ void Client::client()
 bool Client::connect(TcpClient& _socket)
 {
 	auto status = _socket.connect(SERVER_IP, SERVER_TCP_PORT);
+
+	//If the player failed to connect
 	if (status != sf::Socket::Done)
 	{
 		std::cout << "Error connecting to server:" << SERVER_IP << std::endl;
 		return false;
 	}
 
+	//If the player managed to connect
 	std::cout << "Connected to server: " << SERVER_IP <<
 		". on port: " << SERVER_TCP_PORT << "." << std::endl;
 	_socket.setBlocking(false);
