@@ -1,12 +1,14 @@
 #include <SFML/Graphics.hpp>
-#include "Client.h"
+#include "ClientNetwork.h"
+#include "GameClient.h"
+#include <Game\Player.h>
 
-std::unique_ptr<Client> client = std::make_unique<Client>(sf::Color::Red, sf::Vector2f(50.0f, 50.0f),  sf::Vector2f(25.0f, 25.0f));
+std::unique_ptr<GameClient> client = std::make_unique<GameClient>();
 
 void draw()
 {
 	//Creates the client window
-	sf::RenderWindow window(sf::VideoMode(800, 600), "TRONSEXUAL!", sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(800, 600), "POKéTRON!", sf::Style::Close);
 
 	while (window.isOpen())
 	{
@@ -23,8 +25,8 @@ void draw()
 			//If a ke is pressed in the window
 			if (mainEvent.type == sf::Event::KeyPressed)
 			{
-					//Send the event to the client input
-					client->input(&mainEvent);
+				//Send the event to the client input
+				client->input(&mainEvent);
 			}
 		}
 
@@ -32,7 +34,7 @@ void draw()
 		window.clear();
 
 		//Draw the game window
-		client->draw(window);
+		//client->draw(window);
 		window.display();
 	}
 }
@@ -47,6 +49,6 @@ int main()
 	draw_thread.launch();
 
 		/* connects to the server */
-	client->client();
+	client->initialise();
 		return 0;
 }

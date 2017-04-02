@@ -13,6 +13,7 @@
 
 #include "Client.h"
 #include <Game\MessageTypes.h>
+#include <Game\Player.h>
 #include <functional>
 
 constexpr int SERVER_TCP_PORT(53000);
@@ -103,7 +104,7 @@ void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpCli
 		welcome_msg += "There are " + client_count + " connected clients";
 
 		sf::Packet packet;
-		packet << PacketType::MOVEMENT << welcome_msg;
+		packet << PacketType::PING;
 		client_ref.send(packet);
 	}
 }
@@ -155,6 +156,8 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	int movement_state;
 	packet >> movement_state;
 
+
+
 	std::cout << "Client (" << sender.getClientID() << ") movement state: "
 		<< movement_state << std::endl;
 
@@ -164,10 +167,13 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	// send the packet to other clients
 	for (auto& client : tcp_clients)
 	{
+		sf::Packet packet;
+		float x = 300.0f;
+		packet << PacketType::MOVEMENT << x;
+		client.getSocket().send(packet);
+
 		if (sender == client)
 			continue;
-
-		//client.getSocket().send(packet);
 	}
 }
 

@@ -82,12 +82,15 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Code\Game\Player.cpp" />
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Code\Game\GameState.h" />
     <ClInclude Include="..\..\Code\Game\MessageTypes.h" />
     <ClInclude Include="..\..\Code\Game\MoveState.h" />
+    <ClInclude Include="..\..\Code\Game\Player.h" />
+    <ClInclude Include="..\..\Code\Game\Rotation.h" />
     <ClInclude Include="..\..\Code\Game\TronGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
