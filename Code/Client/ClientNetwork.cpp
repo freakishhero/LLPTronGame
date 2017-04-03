@@ -2,6 +2,14 @@
 #include <Game/MessageTypes.h>
 #include "ClientNetwork.h"
 
+ClientNetwork::ClientNetwork()
+{
+}
+
+ClientNetwork::~ClientNetwork()
+{
+}
+
 void ClientNetwork::sendInput(MovementState _state)
 {
 	//Creates a packet
@@ -13,12 +21,6 @@ void ClientNetwork::sendInput(MovementState _state)
 
 	//Sends the packet
 	socket.send(packet);
-}
-
-void ClientNetwork::draw(sf::RenderWindow& _window)
-{
-	//Draws the player to the window
-	//_window.draw(player);
 }
 
 void ClientNetwork::disconnect()
@@ -47,21 +49,21 @@ void ClientNetwork::client()
 			status = socket.receive(packet);
 			if (status == sf::Socket::Done)
 			{
-				float meme = 0.0f;
 				int header = 0;
+				int move_state;
 
 				packet >> header;
 
 				PacketType packet_type = static_cast<PacketType>(header);
 				if (packet_type == PacketType::MOVEMENT)
 				{
-					//packet >> meme;
-					//player.setPosition(sf::Vector2f(meme, 300.0f));
+					packet >> move_state;
+					if (move_state == 0)
+						player_manager->getPlayer()->getSprite().setPosition(sf::Vector2f(200, 200));
 				}
 				else if (packet_type == PacketType::PONG)
 				{
 				}
-
 			}
 		} while (status != sf::Socket::Disconnected);
 

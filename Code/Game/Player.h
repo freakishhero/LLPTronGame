@@ -1,11 +1,13 @@
 #pragma once
+#include <string>
+
 #include <SFML\Graphics.hpp>
 #include "Rotation.h"
 
 class Player : public sf::Sprite
 {
 public:
-	Player(std::string _file_path);
+	Player(std::string&&);
 	~Player() = default;
 	void setPosition(sf::Vector2f _position);
 	void movePosition(sf::Vector2f _position);

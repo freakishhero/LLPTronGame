@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Code\Game\Player.cpp" />
+    <ClCompile Include="..\..\Code\Game\PlayerManager.cpp" />
     <ClCompile Include="..\..\Code\Game\TronGame.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +91,7 @@
     <ClInclude Include="..\..\Code\Game\MessageTypes.h" />
     <ClInclude Include="..\..\Code\Game\MoveState.h" />
     <ClInclude Include="..\..\Code\Game\Player.h" />
+    <ClInclude Include="..\..\Code\Game\PlayerManager.h" />
     <ClInclude Include="..\..\Code\Game\Rotation.h" />
     <ClInclude Include="..\..\Code\Game\TronGame.h" />
   </ItemGroup>

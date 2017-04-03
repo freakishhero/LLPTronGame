@@ -1,13 +1,23 @@
 #include "GameClient.h"
 #include "ClientNetwork.h"
 #include <Game\MoveState.h>
+#include <Game\PlayerManager.h>
+
+GameClient::GameClient()
+{
+}
+
+GameClient::~GameClient()
+{
+}
 
 void GameClient::initialise()
 {
-	//players.push_back(new Player("Pikachu.png"));
-	//players[0]->setPosition(sf::Vector2f(50, 50));
-	players.push_back(new Player("Pikachu.png"));
+	std::thread draw_thread(&GameClient::Draw, this);
+	player_manager->initPlayer();
 	client_network->client();
+	Draw();
+	draw_thread.join();
 }
 
 void GameClient::input(sf::Event* _event)
@@ -38,4 +48,45 @@ void GameClient::input(sf::Event* _event)
 	current one then it's valid to be sent*/
 	if (previous_state != move_state)
 		client_network->sendInput(move_state);
+}
+
+void GameClient::Draw()
+{
+		//Creates the client window
+		sf::RenderWindow window(sf::VideoMode(800, 600), "POKéTRON!", sf::Style::Close);
+
+		while (window.isOpen())
+		{
+			//creates game event
+			sf::Event mainEvent;
+
+			while (window.pollEvent(mainEvent))
+			{
+				//If the window is closed
+				if (mainEvent.type == sf::Event::Closed)
+				{
+					window.close();
+				}
+				//If a ke is pressed in the window
+				if (mainEvent.type == sf::Event::KeyPressed)
+				{
+					//Send the event to the client input
+					input(&mainEvent);
+				}
+			}
+			//Clear the game window
+			window.clear();
+
+			//for (auto& player : client->getPlayers())
+			//{
+			//	player.setPosition(sf::Vector2f(50, 50));
+			//	window.draw(player.getSprite());
+			//}
+
+			//Draw the game window
+			window.draw(player_manager->getPlayer()->getSprite());
+			
+			//client->draw(window);
+			window.display();
+		}
 }

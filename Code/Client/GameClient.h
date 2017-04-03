@@ -1,12 +1,13 @@
 #pragma once
-#include <Game\Player.h>
 #include <vector>
 #include <memory>
 #include <atomic>
 #include <SFML\Graphics.hpp>
 #include <Game\MoveState.h>
+#include <Game\PlayerManager.h>
 
 class ClientNetwork;
+class Player;
 
 class GameClient
 {
@@ -15,10 +16,11 @@ public:
 	~GameClient();
 	void initialise();
 	void input(sf::Event* _event); //Checks which key is pressed
+	void Draw();
 
 private:
 	std::atomic<MovementState> move_state = MovementState::Right; //Holds the current move state
 	MovementState previous_state; //Holds the preivous move state
 	std::unique_ptr<ClientNetwork> client_network = std::make_unique<ClientNetwork>();
-	std::vector<Player*> players;
+	std::shared_ptr<PlayerManager> player_manager = std::make_unique<PlayerManager>();
 };

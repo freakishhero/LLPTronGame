@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <Game/MoveState.h>
+#include <Game\PlayerManager.h>
 
 using TcpClient = sf::TcpSocket;
 using TcpClientPtr = std::unique_ptr<TcpClient>;
@@ -22,9 +23,9 @@ public:
 	void client(); //Connects to the server
 	bool connect(TcpClient&); //Validates connection
 	void sendInput(MovementState _state); //Sends a packet based on key press
-	void draw(sf::RenderWindow& _window); //Draws the player
 	void disconnect();
 
 private:
 	TcpClient socket; // Socket for the client
+	std::shared_ptr<PlayerManager> player_manager = std::make_unique<PlayerManager>();
 };

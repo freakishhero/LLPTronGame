@@ -156,8 +156,6 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	int movement_state;
 	packet >> movement_state;
 
-
-
 	std::cout << "Client (" << sender.getClientID() << ") movement state: "
 		<< movement_state << std::endl;
 
@@ -168,8 +166,7 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	for (auto& client : tcp_clients)
 	{
 		sf::Packet packet;
-		float x = 300.0f;
-		packet << PacketType::MOVEMENT << x;
+		packet << PacketType::MOVEMENT << movement_state;
 		client.getSocket().send(packet);
 
 		if (sender == client)

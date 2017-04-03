@@ -1,14 +1,18 @@
-#include "Player.h"
+#include <Game\Player.h>
 
-Player::Player(std::string _file_path)
+Player::Player(std::string && fname)
 {
-	player_texture.loadFromFile("..\\..\\Resources\\Textures\\" + _file_path);
+	if (!player_texture.loadFromFile("..\\..\\Resources\\" + fname))
+	{
+		return;
+	}
 	player_sprite.setTexture(player_texture);
+	player_sprite.setScale(sf::Vector2f(1, 1));
 }
 
 void Player::setPosition(sf::Vector2f _position)
 {
-	position = _position;
+	player_sprite.setPosition(_position);
 }
 
 void Player::movePosition(sf::Vector2f _position)
