@@ -82,7 +82,7 @@ void listen(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClie
 		}
 		else
 		{
-			ping(tcp_clients);
+			//ping(tcp_clients);
 		}
  	}
 }
@@ -104,8 +104,12 @@ void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpCli
 		welcome_msg += "There are " + client_count + " connected clients";
 
 		sf::Packet packet;
-		packet << PacketType::PING;
+		packet << PacketType::CLIENT_COUNT << tcp_clients.size();
 		client_ref.send(packet);
+
+		sf::Packet packet2;
+		packet2 << PacketType::NEW_CLIENT;
+		client_ref.send(packet2);
 	}
 }
 
@@ -138,6 +142,13 @@ void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector)
 			{
 				sender.pong();
 			}
+			else if (packet_type == PacketType::CLIENT_COUNT)
+			{
+				sf::Packet packet2;
+				packet2 << PacketType::CLIENT_COUNT << tcp_clients.size();
+				//client_ref.send(packet);
+				processPlayerMovement(packet2, sender, tcp_clients);
+			}
 		}
 	}
 }
@@ -165,12 +176,16 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	// send the packet to other clients
 	for (auto& client : tcp_clients)
 	{
-		sf::Packet packet;
-		packet << PacketType::MOVEMENT << movement_state;
-		client.getSocket().send(packet);
-
-		if (sender == client)
+		//sf::Packet packet;
+		//packet << PacketType::MOVEMENT << movement_state;
+		//client.getSocket().send(packet);
+		int header = 0;
+		PacketType packet_type = static_cast<PacketType>(header);
+		if (header != PacketType::CLIENT_COUNT &&sender == client)
+		{
 			continue;
+		}
+		client.getSocket().send(packet);
 	}
 }
 

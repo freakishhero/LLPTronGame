@@ -13,9 +13,9 @@ GameClient::~GameClient()
 
 void GameClient::initialise()
 {
+	//std::unique_ptr<PlayerManager> player_manager(new PlayerManager());
 	std::thread draw_thread(&GameClient::Draw, this);
-	player_manager->initPlayer();
-	client_network->client();
+	client_network->client(player_manager);
 	Draw();
 	draw_thread.join();
 }
@@ -67,7 +67,7 @@ void GameClient::Draw()
 				{
 					window.close();
 				}
-				//If a ke is pressed in the window
+				//If a key is pressed in the window
 				if (mainEvent.type == sf::Event::KeyPressed)
 				{
 					//Send the event to the client input
@@ -84,8 +84,12 @@ void GameClient::Draw()
 			//}
 
 			//Draw the game window
-			window.draw(player_manager->getPlayer()->getSprite());
-			
+			//window.draw(player_manager->getPlayer()->getSprite());
+			for (auto& player : player_manager->getPlayers())
+			{
+				player->Draw(window);
+			}
+			//player_manager->getPlayer()->Draw(window);
 			//client->draw(window);
 			window.display();
 		}

@@ -6,5 +6,6 @@ enum PacketType : sf::Int32
 	MOVEMENT = 1,
 	PING = 2,
 	PONG = 3,
-	CLIENT_COUNT = 4
+	CLIENT_COUNT = 4,
+	NEW_CLIENT = 5
 };

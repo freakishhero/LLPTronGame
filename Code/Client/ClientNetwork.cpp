@@ -4,6 +4,8 @@
 
 ClientNetwork::ClientNetwork()
 {
+	std::thread movement (&ClientNetwork::movementListener, this);
+	movement.detach();
 }
 
 ClientNetwork::~ClientNetwork()
@@ -31,14 +33,24 @@ void ClientNetwork::disconnect()
 	socket.send(packet);
 }
 
-void ClientNetwork::client()
+void ClientNetwork::movementListener()
+{
+	while (true)
+	{
+	}
+}
+
+void ClientNetwork::client(std::unique_ptr<PlayerManager>& _manager)
 {
 	//Checks if the player can connect
 	if (!connect(socket))
 	{
 		return;
 	}
-
+	sf::Packet packet;
+	packet << PacketType::CLIENT_COUNT;
+	socket.send(packet);
+	//managerHeader = _manager;
 	auto handle = std::async(std::launch::async, [&]
 	{		//keep track of the socket status
 		sf::Socket::Status status;
@@ -50,16 +62,45 @@ void ClientNetwork::client()
 			if (status == sf::Socket::Done)
 			{
 				int header = 0;
-				int move_state;
+				//int move_state;
 
 				packet >> header;
 
 				PacketType packet_type = static_cast<PacketType>(header);
+				if (packet_type == PacketType::CLIENT_COUNT)
+				{
+					int player_count = 0;
+					packet >> player_count;
+					_manager->initPlayer(player_count);
+
+				}
+
 				if (packet_type == PacketType::MOVEMENT)
 				{
+					int move_state;
 					packet >> move_state;
+					//move_state = movestate;
 					if (move_state == 0)
-						player_manager->getPlayer()->getSprite().setPosition(sf::Vector2f(200, 200));
+					{
+						_manager->getPlayer()->moveUp();
+					}
+					if (move_state == 1)
+					{
+						_manager->getPlayer()->moveDown();
+					}
+					if (move_state == 2)
+					{
+						_manager->getPlayer()->moveLeft();
+					}
+					if (move_state == 3)
+					{
+						_manager->getPlayer()->moveRight();
+					}
+				}
+				else if (packet_type == NEW_CLIENT)
+				{
+					
+
 				}
 				else if (packet_type == PacketType::PONG)
 				{
