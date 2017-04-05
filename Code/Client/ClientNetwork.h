@@ -32,7 +32,9 @@ private:
 	//std::unique_ptr<PlayerManager>& managerHeader;
 	//std::atomic<int> move_state;
 //	int move_state;
+	int amountOfClients;
 	std::thread movement;
 	TcpClient socket; // Socket for the client
+	int counter = 0;
 	
 };

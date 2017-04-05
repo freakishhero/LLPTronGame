@@ -26,28 +26,12 @@ void GameClient::input(sf::Event* _event)
 	the player isn't sending unecessary packets
 	of the same type to the server. */
 	previous_state = move_state;
-
-	//Sets the movement state based on WASD input
-	switch (_event->key.code)
-	{
-	case sf::Keyboard::W:
-		move_state = MovementState::Up;
-		break;
-	case sf::Keyboard::S:
-		move_state = MovementState::Down;
-		break;
-	case sf::Keyboard::A:
-		move_state = MovementState::Left;
-		break;
-	case sf::Keyboard::D:
-		move_state = MovementState::Right;
-		break;
-	}
-
+	player_manager->input(_event);
+	move_state = player_manager->getMovementState();
 	/*If the preivous movestate isn't the
 	current one then it's valid to be sent*/
 	if (previous_state != move_state)
-		client_network->sendInput(move_state);
+		client_network->sendInput(player_manager->getMovementState());
 }
 
 void GameClient::Draw()
@@ -70,8 +54,9 @@ void GameClient::Draw()
 				//If a key is pressed in the window
 				if (mainEvent.type == sf::Event::KeyPressed)
 				{
-					//Send the event to the client input
-					input(&mainEvent);
+					//Send the event to the player manager
+					this->input(&mainEvent);
+					
 				}
 			}
 			//Clear the game window

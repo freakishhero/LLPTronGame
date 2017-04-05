@@ -35,9 +35,9 @@ void ClientNetwork::disconnect()
 
 void ClientNetwork::movementListener()
 {
-	while (true)
+	/*while (true)
 	{
-	}
+	}*/
 }
 
 void ClientNetwork::client(std::unique_ptr<PlayerManager>& _manager)
@@ -67,13 +67,21 @@ void ClientNetwork::client(std::unique_ptr<PlayerManager>& _manager)
 				packet >> header;
 
 				PacketType packet_type = static_cast<PacketType>(header);
-				if (packet_type == PacketType::CLIENT_COUNT)
-				{
-					int player_count = 0;
-					packet >> player_count;
-					_manager->initPlayer(player_count);
-
-				}
+				
+					if (packet_type == PacketType::CLIENT_COUNT)
+					{
+						/*if (counter > 0)
+						*///{
+							int player_count = 0;
+							packet >> player_count;
+							
+							_manager->initPlayer(player_count);
+							
+						}
+						//counter++;
+					//}
+				
+				
 
 				if (packet_type == PacketType::MOVEMENT)
 				{
@@ -82,24 +90,52 @@ void ClientNetwork::client(std::unique_ptr<PlayerManager>& _manager)
 					//move_state = movestate;
 					if (move_state == 0)
 					{
-						_manager->getPlayer()->moveUp();
+						_manager->getPlayers()[0]->moveUp();
 					}
-					if (move_state == 1)
+					else if (move_state == 1)
 					{
-						_manager->getPlayer()->moveDown();
+						_manager->getPlayers()[0]->moveDown();
 					}
-					if (move_state == 2)
+					else if (move_state == 2)
 					{
-						_manager->getPlayer()->moveLeft();
+						_manager->getPlayers()[0]->moveLeft();
 					}
-					if (move_state == 3)
+					else if (move_state == 3)
 					{
-						_manager->getPlayer()->moveRight();
+						_manager->getPlayers()[0]->moveRight();
+					}
+
+
+					if (move_state == 4)
+					{
+						if (_manager->getPlayers().size() == 2)
+						_manager->getPlayers()[1]->moveUp();
+					}
+					else if (move_state == 5)
+					{
+						if (_manager->getPlayers().size() == 2)
+						_manager->getPlayers()[1]->moveDown();
+					}
+					else if (move_state == 6)
+					{
+						if (_manager->getPlayers().size() == 2)
+						_manager->getPlayers()[1]->moveLeft();
+					}
+					else if (move_state == 7)
+					{
+						if (_manager->getPlayers().size() == 2)
+						_manager->getPlayers()[1]->moveRight();
 					}
 				}
-				else if (packet_type == NEW_CLIENT)
+				else if (packet_type == PacketType::NEW_CLIENT)
 				{
-					
+					int new_player;
+					packet >> new_player;
+					if (amountOfClients != 1 || amountOfClients != 2)
+					{
+						amountOfClients = new_player;
+					}
+					_manager->initPlayer(new_player);
 
 				}
 				else if (packet_type == PacketType::PONG)

@@ -12,10 +12,19 @@ Player::Player(std::string && fname)
 	player_sprite.setScale(sf::Vector2f(1, 1));
 }
 
-//void Player::setPosition(sf::Vector2f _position)
-//{
-//	player_sprite.setPosition(_position);
-//}
+Player::~Player()
+{
+
+}
+
+void Player::setPosition(sf::Vector2f _position)
+{
+	player_sprite.setPosition(_position);
+}
+void Player::KillThread()
+{
+	ThreadAlive = false;
+}
 //
 //void Player::movePosition(sf::Vector2f _position)
 //{
@@ -54,7 +63,7 @@ void Player::moveDown()
 
 void Player::masterMove()
 {
-	while (true)
+	while (ThreadAlive ==true)
 	{
 		if (moveInt == 0)
 		{
@@ -74,5 +83,22 @@ void Player::masterMove()
 		}
 	}
 }
+
+
+void Player::setPlayerNum(int Player)
+{
+	playerNum = Player;
+}
+
+int Player::getPlayerNum()
+{
+	return playerNum;
+}
+
+
+//void Player::setPosition(sf::Vector2f pos)
+//{
+//	getSprite().setPosition(pos);
+//}
 
 

@@ -9,9 +9,9 @@ class Player : public sf::Sprite
 {
 public:
 	Player(std::string&&);
-	~Player() = default;
-	void setPosition(sf::Vector2f _position);
-	void movePosition(sf::Vector2f _position);
+	~Player();
+	/*void setPosition(sf::Vector2f _position);
+	void movePosition(sf::Vector2f _position);*/
 	void Draw(sf::RenderWindow& _window);
 	sf::Sprite getSprite();
 	void moveLeft();
@@ -19,7 +19,13 @@ public:
 	void moveUp();
 	void moveDown();
 	void masterMove();
+	void setPosition(sf::Vector2f pos);
+	void KillThread();
+	void setPlayerNum(int Player);
+	int getPlayerNum();
 private:
+	int playerNum = 0;
+	bool ThreadAlive = true;
 	std::atomic<int> moveInt;
 	//std::thread movement;
 	sf::Vector2f position = sf::Vector2f(0, 0);

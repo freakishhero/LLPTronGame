@@ -1,39 +1,12 @@
 // ChatServer.cpp : Defines the entry point for the console application.
+#include "TronServer.h"
 
-#include "stdafx.h"
+Server::Server()
+{
+	runServer();
+}
 
-#include <algorithm>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
-
-#include <SFML\Network.hpp>
-#include <SFML\System.hpp>
-
-#include "Client.h"
-#include <Game\MessageTypes.h>
-#include <Game\Player.h>
-#include <functional>
-
-constexpr int SERVER_TCP_PORT(53000);
-constexpr int SERVER_UDP_PORT(53001);
-
-using TcpClient = sf::TcpSocket;
-using TcpClientPtr = std::unique_ptr<TcpClient>;
-using TcpClients = std::vector<Client>;
-
-// prototypes
-bool bindServerPort(sf::TcpListener&);
-void clearStaleCli(TcpClients & tcp_clients);
-void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClients& tcp_clients);
-void listen(sf::TcpListener&, sf::SocketSelector&, TcpClients&);
-void processPlayerMovement(sf::Packet &packet, Client & sender, TcpClients & tcp_clients);
-void ping(TcpClients& tcp_clients);
-void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector);
-void runServer();
-
-void ping(TcpClients& tcp_clients)
+void Server::ping(TcpClients& tcp_clients)
 {
 	constexpr auto timeout = 10s;
 	for (auto& client : tcp_clients)
@@ -48,7 +21,7 @@ void ping(TcpClients& tcp_clients)
 	}
 }
 
-void runServer()
+void Server::runServer()
 {
 	sf::TcpListener tcp_listener;
 	if (!bindServerPort(tcp_listener))
@@ -63,7 +36,7 @@ void runServer()
 	return listen(tcp_listener, selector, tcp_clients);
 }
 
-void listen(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClients& tcp_clients)
+void Server::listen(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClients& tcp_clients)
 {
 	while (true)
 	{
@@ -87,7 +60,7 @@ void listen(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClie
  	}
 }
 
-void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClients& tcp_clients)
+void Server::connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpClients& tcp_clients)
 {
 	auto  client_ptr = new sf::TcpSocket;
 	auto& client_ref = *client_ptr;
@@ -98,22 +71,14 @@ void connect(sf::TcpListener& tcp_listener, sf::SocketSelector& selector, TcpCli
 		auto client = Client(client_ptr);
 		tcp_clients.push_back(std::move(client));
 		std::cout << "Client (" << client.getClientID() << ") connected." << std::endl;
-		std::string welcome_msg;
-		std::string client_count = std::to_string(tcp_clients.size());
-		welcome_msg = "Welcome to Huxy's chat room \n";
-		welcome_msg += "There are " + client_count + " connected clients";
 
 		sf::Packet packet;
-		packet << PacketType::CLIENT_COUNT << tcp_clients.size();
+		packet << PacketType::NEW_CLIENT << tcp_clients.size();
 		client_ref.send(packet);
-
-		sf::Packet packet2;
-		packet2 << PacketType::NEW_CLIENT;
-		client_ref.send(packet2);
 	}
 }
 
-void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector)
+void Server::receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector)
 {
 	for (auto& sender : tcp_clients)
 	{
@@ -133,7 +98,7 @@ void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector)
 			int header = 0;
 			packet >> header;
 
-			PacketType packet_type = static_cast<PacketType>(header);
+			packet_type = static_cast<PacketType>(header);
 			if (packet_type == PacketType::MOVEMENT)
 			{
 				processPlayerMovement(packet, sender, tcp_clients);
@@ -153,7 +118,7 @@ void receiveMsg(TcpClients& tcp_clients, sf::SocketSelector& selector)
 	}
 }
 
-void clearStaleCli(TcpClients & tcp_clients)
+void Server::clearStaleCli(TcpClients & tcp_clients)
 {
 	tcp_clients.erase(
 		std::remove_if(tcp_clients.begin(), tcp_clients.end(), [](const Client& client)
@@ -162,9 +127,9 @@ void clearStaleCli(TcpClients & tcp_clients)
 	}), tcp_clients.end());
 }
 
-void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_clients)
+void Server::processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_clients)
 {
-	int movement_state;
+	int movement_state = 0;
 	packet >> movement_state;
 
 	std::cout << "Client (" << sender.getClientID() << ") movement state: "
@@ -176,12 +141,7 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	// send the packet to other clients
 	for (auto& client : tcp_clients)
 	{
-		//sf::Packet packet;
-		//packet << PacketType::MOVEMENT << movement_state;
-		//client.getSocket().send(packet);
-		int header = 0;
-		PacketType packet_type = static_cast<PacketType>(header);
-		if (header != PacketType::CLIENT_COUNT &&sender == client)
+		if (packet_type != PacketType::MOVEMENT &&sender == client)
 		{
 			continue;
 		}
@@ -189,7 +149,9 @@ void processPlayerMovement(sf::Packet& packet, Client& sender, TcpClients& tcp_c
 	}
 }
 
-bool bindServerPort(sf::TcpListener& listener)
+
+
+bool Server::bindServerPort(sf::TcpListener& listener)
 {
 	if (listener.listen(SERVER_TCP_PORT) != sf::Socket::Done)
 	{
@@ -204,8 +166,4 @@ bool bindServerPort(sf::TcpListener& listener)
 	return true;
 }
 
-int main()
-{
-	runServer();
-	return 0;
-}
+

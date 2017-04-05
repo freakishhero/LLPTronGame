@@ -5,7 +5,7 @@
 
 int main()
 {
-	std::unique_ptr<GameClient> client = std::make_unique<GameClient>();
+	std::unique_ptr<GameClient> client (new GameClient());
 	/* Creates a thread of the draw function so it can run
 		with other tasks instead of halting the game. */
 		//Runs the draw thread
