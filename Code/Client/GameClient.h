@@ -17,10 +17,12 @@ public:
 	void initialise();
 	void input(sf::Event* _event); //Checks which key is pressed
 	void Draw();
+	void createGrid();
 
 private:
 	std::atomic<MovementState> move_state = MovementState::NONE; //Holds the current move state
 	MovementState previous_state; //Holds the preivous move state
 	std::unique_ptr<ClientNetwork> client_network = std::make_unique<ClientNetwork>();
 	std::unique_ptr<PlayerManager> player_manager = std::make_unique<PlayerManager>();
+	std::vector<sf::RectangleShape> trail;
 };

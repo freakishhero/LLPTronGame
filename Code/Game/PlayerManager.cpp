@@ -18,6 +18,7 @@ void PlayerManager::initPlayer(int client_count)
 		players.push_back(player);
 		getPlayers()[0]->setPosition(sf::Vector2f(25.0f, 25.0f));
 		getPlayers()[0]->setPlayerNum(1);
+		getPlayers()[0]->getCollider()->setFillColor(sf::Color::Yellow);
 	}
 	if (client_count == 2)
 	{
@@ -30,10 +31,12 @@ void PlayerManager::initPlayer(int client_count)
 		players.push_back(player);
 		getPlayers()[0]->setPosition(sf::Vector2f(25.0f, 25.0f));
 		getPlayers()[0]->setPlayerNum(1);
+		getPlayers()[0]->getCollider()->setFillColor(sf::Color::Yellow);
 		player = new Player("Bulbasaur.png");
 		players.push_back(player);
 		getPlayers()[1]->setPosition(sf::Vector2f(400.0f, 25.0f));
 		getPlayers()[1]->setPlayerNum(2);
+		getPlayers()[1]->getCollider()->setFillColor(sf::Color::Green);
 	}
 }
 Player * PlayerManager::getPlayer()
