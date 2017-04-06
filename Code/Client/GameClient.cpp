@@ -2,6 +2,7 @@
 #include "ClientNetwork.h"
 #include <Game\MoveState.h>
 #include <Game\PlayerManager.h>
+#include <SFML\Audio.hpp>
 
 GameClient::GameClient()
 {
@@ -13,6 +14,23 @@ GameClient::~GameClient()
 
 void GameClient::initialise()
 {
+	if (!background_texture.loadFromFile("..\\..\\Resources\\Background.png"))
+	{
+		return;
+	}
+	background_sprite.setTexture(background_texture);
+	background_sprite.setPosition(0, 0);
+
+	if (!start.openFromFile("..\\..\\resources\\PokemonOut.ogg"))
+	{
+		return;
+	}
+	if (!theme.openFromFile("..\\..\\Resources\\Theme.ogg"))
+	{
+		return;
+	}
+	start.play();
+	theme.play();
 	createGrid();
 	//std::unique_ptr<PlayerManager> player_manager(new PlayerManager());
 	std::thread draw_thread(&GameClient::Draw, this);
@@ -92,7 +110,7 @@ void GameClient::Draw()
 		}
 		//Clear the game window
 		window.clear();
-
+		window.draw(background_sprite);
 		//for (auto& player : client->getPlayers())
 		//{
 		//	player.setPosition(sf::Vector2f(50, 50));
@@ -137,6 +155,7 @@ void GameClient::Draw()
 			}
 			player->getCollider()->setPosition(player->getSprite().getPosition().x + 45.0f, player->getSprite().getPosition().y + 60.0f);
 			player->Draw(window);
+			
 		}
 		//player_manager->getPlayer()->Draw(window);
 		//client->draw(window);

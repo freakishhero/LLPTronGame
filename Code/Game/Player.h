@@ -19,7 +19,7 @@ public:
 	//void moveUp();
 	//void moveDown();
 	void movePlayer(int _direction);
-	void masterMove();
+	void updateMovement();
 	void setPosition(sf::Vector2f pos);
 	void KillThread();
 	void setPlayerNum(int Player);

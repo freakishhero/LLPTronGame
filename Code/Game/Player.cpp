@@ -2,7 +2,7 @@
 
 Player::Player(std::string && fname)
 {
-	std::thread movement(&Player::masterMove, this);
+	std::thread movement(&Player::updateMovement, this);
 	movement.detach();
 	if (!player_texture.loadFromFile("..\\..\\Resources\\" + fname))
 	{
@@ -10,7 +10,6 @@ Player::Player(std::string && fname)
 	}
 	player_sprite.setTexture(player_texture);
 	player_sprite.setScale(sf::Vector2f(1.0f, 1.0f));
-	movement_direction = 3;
 	collider.setSize(sf::Vector2f(0.01f, 0.01f));
 	collider.setPosition(player_sprite.getPosition().x + 45.0f, player_sprite.getPosition().y + 60.0f);
 }
@@ -77,7 +76,7 @@ void Player::movePlayer(int _direction)
 //	moveInt = 1;
 //}
 
-void Player::masterMove()
+void Player::updateMovement()
 {
 	while (ThreadAlive == true)
 	{

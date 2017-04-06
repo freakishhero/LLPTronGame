@@ -9,10 +9,11 @@ void PlayerManager::initPlayer(int client_count)
 {	
 	if (client_count == 1)
 	{
-		for (std::vector<Player*>::iterator i = players.begin(); i != players.end(); i++)
+		for (auto& player : players)
 		{
-			(*i)->KillThread();
+			player->KillThread();
 		}
+		//init player 1 singleplayer
 		players.clear();
 		player = new Player("Pikachu.png");
 		players.push_back(player);
@@ -22,16 +23,19 @@ void PlayerManager::initPlayer(int client_count)
 	}
 	if (client_count == 2)
 	{
-		for (std::vector<Player*>::iterator i = players.begin(); i != players.end(); i++)
+		for (auto& player : players)
 		{
-			(*i)->KillThread();
+			player->KillThread();
 		}
+		//init player 1
 		players.clear();
 		player = new Player("Pikachu.png");
 		players.push_back(player);
 		getPlayers()[0]->setPosition(sf::Vector2f(25.0f, 25.0f));
 		getPlayers()[0]->setPlayerNum(1);
 		getPlayers()[0]->getCollider()->setFillColor(sf::Color::Yellow);
+
+		// init player 2
 		player = new Player("Bulbasaur.png");
 		players.push_back(player);
 		getPlayers()[1]->setPosition(sf::Vector2f(400.0f, 25.0f));
@@ -82,34 +86,24 @@ void PlayerManager::input(sf::Event* _event)
 			move_state = MovementState::Right;
 			break;
 		}
-	//}
 
-
-	//if (player->getPlayerNum() == 2)
-	//{
+		//Sets the movement state based on arrow key input
+		//if (player->getPlayerNum() == 2)
 		switch (_event->key.code)
 			{
-			case sf::Keyboard::T:
+			case sf::Keyboard::Up:
 				move_state = MovementState::Up2;
 				break;
-			case sf::Keyboard::G:
+			case sf::Keyboard::Down:
 				move_state = MovementState::Down2;
 				break;
-			case sf::Keyboard::F:
+			case sf::Keyboard::Left:
 				move_state = MovementState::Left2;
 				break;
-			case sf::Keyboard::H:
+			case sf::Keyboard::Right:
 				move_state = MovementState::Right2;
 				break;
 			}
-	//}
-	
-	/*If the preivous movestate isn't the
-	current one then it's valid to be sent*/
-	if (previous_state != move_state)
-	{
-
-	}
 }
 
 MovementState PlayerManager::getMovementState()

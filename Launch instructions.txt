@@ -1,0 +1,3 @@
+Start the project by launching the client and server simultaneously. Then launch an additional client for multiplayer.
+
+Player one moves with WASD. Player 2 moves with arrow keys.

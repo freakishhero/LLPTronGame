@@ -5,6 +5,7 @@
 #include <SFML\Graphics.hpp>
 #include <Game\MoveState.h>
 #include <Game\PlayerManager.h>
+#include <SFML\Audio.hpp>
 
 class ClientNetwork;
 class Player;
@@ -25,4 +26,8 @@ private:
 	std::unique_ptr<ClientNetwork> client_network = std::make_unique<ClientNetwork>();
 	std::unique_ptr<PlayerManager> player_manager = std::make_unique<PlayerManager>();
 	std::vector<sf::RectangleShape> trail;
+	sf::Texture background_texture;
+	sf::Sprite background_sprite;
+	sf::Music theme;
+	sf::Music start;
 };
