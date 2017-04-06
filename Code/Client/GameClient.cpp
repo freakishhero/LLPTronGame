@@ -35,7 +35,7 @@ void GameClient::initialise()
 	//std::unique_ptr<PlayerManager> player_manager(new PlayerManager());
 	std::thread draw_thread(&GameClient::Draw, this);
 	client_network->client(player_manager);
-	Draw();
+	//Draw();
 	draw_thread.join();
 }
 
@@ -51,6 +51,13 @@ void GameClient::createGrid()
 	{
 		trail.push_back(sf::RectangleShape());
 
+		trail[i].setFillColor(sf::Color::Transparent);
+		trail[i].setSize(sf::Vector2f(10, 10));
+		trail[i].setPosition((i % 90) * 10, (i / 90) * 10);
+
+
+		//LGBTQ GRID kinda
+		//trail[i].setPosition((i % 45) * 20, (i / 45) * 20);
 		//if(i >= 0 && i < 405)
 		//	trail[i].setFillColor(sf::Color::Yellow);
 		//if (i >= 405 && i < 810)
@@ -60,12 +67,7 @@ void GameClient::createGrid()
 		//if (i >= 1215 && i < 1620)
 		//	trail[i].setFillColor(sf::Color::Blue);
 		//if (i >= 1620 && i < 2025)
-		//	trail[i].setFillColor(sf::Color::Cyan);	
-
-		trail[i].setFillColor(sf::Color::Transparent);
-		trail[i].setSize(sf::Vector2f(10, 10));
-		trail[i].setPosition((i % 90) * 10, (i / 90) * 10);
-		//trail[i].setPosition((i % 45) * 20, (i / 45) * 20);
+		//	trail[i].setFillColor(sf::Color::Cyan);
 	}
 }
 
@@ -137,20 +139,26 @@ void GameClient::Draw()
 		for (auto& player : player_manager->getPlayers())
 		{
 
-			for (auto& tile : trail)
+			for (int i = 0; i < trail.size(); i++)
 			{
-				if (player->getCollider()->getGlobalBounds().intersects(tile.getGlobalBounds()))
+				
+				if (player->getCollider()->getGlobalBounds().intersects(trail[i].getGlobalBounds()))
 				{
-					if (tile.getFillColor() == sf::Color::Transparent)
+					if (i != last_index_collided)
 					{
-						tile.setFillColor(player->getCollider()->getFillColor());
+						if (trail[i].getFillColor() == sf::Color::Transparent)
+						{
+							trail[i].setFillColor(player->getCollider()->getFillColor());
+							last_index_collided = i;
+						}
+						else if (trail[i].getFillColor() != sf::Color::Transparent)
+						{
+						window.close();
+						}
 					}
-					else if (tile.getFillColor() != sf::Color::Transparent)
-					{
-						//window.close();
-					}
+					
 				}
-				window.draw(tile);
+				window.draw(trail[i]);
 				/* Add colided tiles to a vector and only render those*/
 			}
 			player->getCollider()->setPosition(player->getSprite().getPosition().x + 45.0f, player->getSprite().getPosition().y + 60.0f);

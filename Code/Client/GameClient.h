@@ -30,4 +30,5 @@ private:
 	sf::Sprite background_sprite;
 	sf::Music theme;
 	sf::Music start;
+	int last_index_collided;
 };

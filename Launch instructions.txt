@@ -1,3 +1,6 @@
 Start the project by launching the client and server simultaneously. Then launch an additional client for multiplayer.
 
 Player one moves with WASD. Player 2 moves with arrow keys.
+
+THERE IS CURRENTLY AN ISSUE where collision will instantly trigger when a second player joins. Collision works with one client.
+Comment out "window.close();" on line:156 in GameClient.cpp to temporarily disable collision to test the game with two players.

@@ -15,7 +15,6 @@ using TcpClients = std::vector<TcpClientPtr>;
 const sf::IpAddress SERVER_IP("127.0.0.1");
 constexpr int SERVER_TCP_PORT(53000);
 constexpr int SERVER_UDP_PORT(53001);
-
 class ClientNetwork
 {
 public:
@@ -32,7 +31,7 @@ private:
 	//std::unique_ptr<PlayerManager>& managerHeader;
 	//std::atomic<int> move_state;
 //	int move_state;
-	int amountOfClients;
+	int client_count;
 	std::thread movement;
 	TcpClient socket; // Socket for the client
 	int counter = 0;

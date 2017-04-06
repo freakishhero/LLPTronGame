@@ -4,14 +4,15 @@ Player::Player(std::string && fname)
 {
 	std::thread movement(&Player::updateMovement, this);
 	movement.detach();
+	collider.setSize(sf::Vector2f(0.01f, 0.01f));
+	collider.setPosition(player_sprite.getPosition().x + 45.0f, player_sprite.getPosition().y + 60.0f);
 	if (!player_texture.loadFromFile("..\\..\\Resources\\" + fname))
 	{
 		return;
 	}
 	player_sprite.setTexture(player_texture);
 	player_sprite.setScale(sf::Vector2f(1.0f, 1.0f));
-	collider.setSize(sf::Vector2f(0.01f, 0.01f));
-	collider.setPosition(player_sprite.getPosition().x + 45.0f, player_sprite.getPosition().y + 60.0f);
+	
 }
 
 Player::~Player()
@@ -19,10 +20,6 @@ Player::~Player()
 
 }
 
-void Player::setPosition(sf::Vector2f _position)
-{
-	player_sprite.setPosition(_position);
-}
 void Player::KillThread()
 {
 	ThreadAlive = false;
@@ -104,14 +101,14 @@ void Player::updateMovement()
 }
 
 
-void Player::setPlayerNum(int Player)
+void Player::setPlayerID(int ID)
 {
-	playerNum = Player;
+	playerID = ID;
 }
 
-int Player::getPlayerNum()
+int Player::getPlayerID()
 {
-	return playerNum;
+	return playerID;
 }
 
 sf::RectangleShape* Player::getCollider()

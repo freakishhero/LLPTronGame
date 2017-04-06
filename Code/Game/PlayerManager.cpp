@@ -18,8 +18,9 @@ void PlayerManager::initPlayer(int client_count)
 		player = new Player("Pikachu.png");
 		players.push_back(player);
 		getPlayers()[0]->setPosition(sf::Vector2f(25.0f, 25.0f));
-		getPlayers()[0]->setPlayerNum(1);
+		getPlayers()[0]->setPlayerID(1);
 		getPlayers()[0]->getCollider()->setFillColor(sf::Color::Yellow);
+		getPlayers()[0]->getCollider()->setPosition(getPlayers()[0]->getSprite().getPosition().x + 45.0f, getPlayers()[0]->getSprite().getPosition().y + 60.0f);
 	}
 	if (client_count == 2)
 	{
@@ -32,15 +33,19 @@ void PlayerManager::initPlayer(int client_count)
 		player = new Player("Pikachu.png");
 		players.push_back(player);
 		getPlayers()[0]->setPosition(sf::Vector2f(25.0f, 25.0f));
-		getPlayers()[0]->setPlayerNum(1);
+		getPlayers()[0]->setPlayerID(1);
 		getPlayers()[0]->getCollider()->setFillColor(sf::Color::Yellow);
+		getPlayers()[0]->getCollider()->setSize(sf::Vector2f(0.01f, 0.01f));
+		getPlayers()[0]->getCollider()->setPosition(getPlayers()[0]->getSprite().getPosition().x + 45.0f, getPlayers()[0]->getSprite().getPosition().y + 60.0f);
 
 		// init player 2
 		player = new Player("Bulbasaur.png");
 		players.push_back(player);
 		getPlayers()[1]->setPosition(sf::Vector2f(400.0f, 25.0f));
-		getPlayers()[1]->setPlayerNum(2);
+		getPlayers()[1]->setPlayerID(2);
 		getPlayers()[1]->getCollider()->setFillColor(sf::Color::Green);
+		getPlayers()[0]->getCollider()->setSize(sf::Vector2f(0.01f, 0.01f));
+		getPlayers()[0]->getCollider()->setPosition(getPlayers()[0]->getSprite().getPosition().x + 45.0f, getPlayers()[0]->getSprite().getPosition().y + 60.0f);
 	}
 }
 Player * PlayerManager::getPlayer()

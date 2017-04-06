@@ -129,9 +129,9 @@ void ClientNetwork::client(std::unique_ptr<PlayerManager>& _manager)
 				{
 					int new_player;
 					packet >> new_player;
-					if (amountOfClients != 1 || amountOfClients != 2)
+					if (client_count != 1 || client_count != 2)
 					{
-						amountOfClients = new_player;
+						client_count = new_player;
 					}
 					_manager->initPlayer(new_player);
 
